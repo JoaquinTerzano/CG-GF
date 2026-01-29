@@ -15,39 +15,30 @@ Para generar cadenas aleatorias y su valor en formato JSON:
 
 #### Ejemplo 1
 
-Inglés: 15 units are equal to 17 units or 25 units are distinct from 60 units
+Inglés: The inactive player draws 82 cards from the deck of the inactive player
 
-Español: 15 unidades son iguales a 17 unidades o 25 unidades son distintas de 60 unidades
+Español: El jugador inactivo roba 82 cartas del mazo del jugador inactivo
 
 ```json
 {
-  "func": "or",
+  "func": "draw",
   "args": [
     {
-      "func": "==",
+      "func": "player",
+      "args": ["inactive"]
+    },
+    {
+      "func": "deck",
       "args": [
         {
-          "func": "natural",
-          "args": [15]
-        },
-        {
-          "func": "natural",
-          "args": [17]
+          "func": "player",
+          "args": ["inactive"]
         }
       ]
     },
     {
-      "func": "!=",
-      "args": [
-        {
-          "func": "natural",
-          "args": [25]
-        },
-        {
-          "func": "natural",
-          "args": [60]
-        }
-      ]
+      "func": "natural",
+      "args": [82]
     }
   ]
 }
@@ -55,6 +46,38 @@ Español: 15 unidades son iguales a 17 unidades o 25 unidades son distintas de 6
 
 #### Ejemplo 2
 
+Inglés: The active player draws every card from the deck of the active player
+
+Español: El jugador activo roba cada carta del mazo del jugador activo
+
+```json
+{
+  "func": "draw",
+  "args": [
+    {
+      "func": "player",
+      "args": ["active"]
+    },
+    {
+      "func": "deck",
+      "args": [
+        {
+          "func": "player",
+          "args": ["active"]
+        }
+      ]
+    },
+    {
+      "func": "logical",
+      "args": ["all"]
+    }
+  ]
+}
+```
+
+#### Ejemplo 3
+
+p "if the size of the hand of the active player is equal to the size of the hand of the active player , the active player draws 2 cards from the deck of active player"
 Inglés: 8 units aren't distinct from 77 units or 7 units aren't equal to 70 units
 
 Español: 8 unidades no son distintas de 77 unidades o 7 unidades no son iguales a 70 unidades

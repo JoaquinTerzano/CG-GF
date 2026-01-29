@@ -1,5 +1,7 @@
-abstract Base = {
-  flags startcat = TestBase;
+abstract CG = {
+  flags
+    startcat = Desc;
+    coding = utf8;
 
   -- NATURAL NUMBERS
   cat
@@ -21,6 +23,8 @@ abstract Base = {
     n91, n92, n93, n94, n95, n96, n97, n98, n99: Nat;
 
     -- EXPRESSION
+    NatNatTerm: Nat -> NatTerm;
+    NatTermExpr: NatTerm -> NatExpr;
     -- X plus Y, X más Y
     Add: NatTerm -> NatTerm -> NatExpr;
     -- X times Y, X por Y
@@ -61,6 +65,10 @@ abstract Base = {
 
   fun
     -- EXPRESSION
+    -- P
+    Bool: BoolTerm -> BoolExpr;
+    -- not P
+    BoolNot: BoolTerm -> BoolExpr;
     -- P and Q / P y Q
     BoolAnd: BoolTerm -> BoolTerm -> BoolExpr;
     -- P or Q / P o Q
@@ -70,11 +78,33 @@ abstract Base = {
     -- not P and not Q
     BoolNor: BoolTerm -> BoolTerm -> BoolExpr;
 
-  -- TEST
   cat
-    TestBase;
-  
+    Desc;
+    Rule;
+    Action;
+    Player;
+    Location;
+    Hand;
+    Pile;
+
   fun
-    TestNatExpr: Nat -> NatExpr;
-    TestBoolExpr: BoolExpr -> TestBase;
+    ActivePlayer, InactivePlayer: Player;
+
+    PlayerHand: Player -> Hand;
+    PlayerDeck: Player -> Pile;
+    PlayerDiscardPile: Player -> Pile;
+
+    HandLocation: Hand -> Location;
+    PileLocation: Pile -> Location;
+
+    LocationSize: Location -> NatTerm;
+
+    DrawAction: Player -> Pile -> Quantifier -> Action;
+    DiscardAction: Player -> Hand -> Quantifier -> Action;
+
+    SimpleRule: Action -> Rule;
+    TestBoolExpr: BoolExpr -> Rule;
+    ConditionalRule: BoolExpr -> Action -> Rule;
+
+    Description: Rule -> Desc;
 }
