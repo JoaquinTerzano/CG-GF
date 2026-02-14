@@ -1,110 +1,183 @@
-abstract CG = {
+abstract CG = open Syntax in {
   flags
-    startcat = Desc;
-    coding = utf8;
+    startcat = Begin ;
+    coding = utf8 ;
 
-  -- NATURAL NUMBERS
+
+  -- NATURAL
   cat
-    Nat; -- natural number
-    NatTerm; -- natural number term
-    NatExpr; -- natural number expression
+    Nat ; -- Digits
+    NatTerm ; -- NP
+    NatExpr ; -- NP
+    NatOper ; -- Prep
+    NatRel ; -- A2
 
   fun
-    -- Hardcodeados porque no queda otra
-    n1,  n2,  n3,  n4,  n5,  n6,  n7,  n8,  n9,  n10,
-    n11, n12, n13, n14, n15, n16, n17, n18, n19, n20,
-    n21, n22, n23, n24, n25, n26, n27, n28, n29, n30,
-    n31, n32, n33, n34, n35, n36, n37, n38, n39, n40,
-    n41, n42, n43, n44, n45, n46, n47, n48, n49, n50,
-    n51, n52, n53, n54, n55, n56, n57, n58, n59, n60,
-    n61, n62, n63, n64, n65, n66, n67, n68, n69, n70,
-    n71, n72, n73, n74, n75, n76, n77, n78, n79, n80,
-    n81, n82, n83, n84, n85, n86, n87, n88, n89, n90,
-    n91, n92, n93, n94, n95, n96, n97, n98, n99: Nat;
+    -- Hay que hardcodear los números
+    -- 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+    n2, n3, n4, n5, n6, n7, n8, n9 : Nat ;
+
+    -- TERM
+    -- <Nat> cards, <Nat> cartas
+    Number : Nat -> NatTerm ;
+    -- the size of <Location>, el tamaño de <Location>
+    Size : Location -> NatTerm ;
 
     -- EXPRESSION
-    NatNatTerm: Nat -> NatTerm;
-    NatTermExpr: NatTerm -> NatExpr;
-    -- X plus Y, X más Y
-    Add: NatTerm -> NatTerm -> NatExpr;
-    -- X times Y, X por Y
-    Multiply: NatTerm -> NatTerm -> NatExpr;
+    -- <NatTerm>
+    NatExpr1 : NatTerm -> NatExpr ;
+    -- <NatTerm> <NatOper> <NatTerm>
+    NatExpr2 : NatTerm -> NatOper -> NatTerm -> NatExpr ;
 
-    -- RELATION
-    -- less than / menor a
-    Less: NatExpr -> NatExpr -> BoolTerm;
-    -- more than / mayor a
-    More: NatExpr -> NatExpr -> BoolTerm;
-    -- equal to / igual a
-    Equal: NatExpr -> NatExpr -> BoolTerm;
-    -- not equal to / distinto a
-    NotEq: NatExpr -> NatExpr -> BoolTerm;
-    -- less than or equal to / menor o igual a
-    LessEq: NatExpr -> NatExpr -> BoolTerm;
-    -- more than or equal to / mayor o igual a
-    MoreEq: NatExpr -> NatExpr -> BoolTerm;
+    -- FUNCTION
+    -- plus, más
+    NatAdd : NatOper ;
+    -- times, por
+    NatMult : NatOper ;
+    -- less than, menor que
+    NatLess : NatRel ;
+    -- more than, mayor que
+    NatMore : NatRel ;
+    -- equal to, igual a
+    NatEqual : NatRel ;
+    -- not equal to, distinto de
+    NatNotEqual : NatRel ;
+    -- at most, como mucho
+    NatLessEqual : NatRel ;
+    -- at least, como mínimo
+    NatMoreEqual : NatRel ;
 
-  -- QUANTIFIER
-  cat
-    Quantifier;
-
-  fun
-    -- a, 2, 3, ... / un, 2, 3, ...
-    NatQuant: Nat -> Quantifier;
-    -- all / todos
-    AllQuant: Quantifier;
-    -- at least X / al menos X
-    AtLeast: Nat -> Quantifier;
-    -- at most X / a lo sumo X
-    AtMost: Nat -> Quantifier;
 
   -- BOOLEAN
   cat
-    BoolTerm; -- boolean term
-    BoolExpr; -- boolean expression
+    BoolTerm ; -- Cl
+    BoolExpr ; -- S
+    BoolOper ; -- Conj
+    BoolPol ; -- Pol
+    Event ; -- S
 
   fun
+    -- TERM
+    -- <NatExpr> is <NatRel> <NatExpr>, <NatExpr> es <NatRel> <NatExpr>
+    Compare : NatExpr -> NatRel -> NatExpr -> BoolTerm ;
+    -- <Location> (is | isn't) empty, <Location> (está | no está) (vacío | vacía)
+    Empty : Location -> BoolTerm ;
+    -- you play this card | etc, tú juegas esta carta | etc
+    Trigger : Action -> Event ;
+
     -- EXPRESSION
-    -- P
-    Bool: BoolTerm -> BoolExpr;
-    -- not P
-    BoolNot: BoolTerm -> BoolExpr;
-    -- P and Q / P y Q
-    BoolAnd: BoolTerm -> BoolTerm -> BoolExpr;
-    -- P or Q / P o Q
-    BoolOr: BoolTerm -> BoolTerm -> BoolExpr;
-    -- not P or not Q
-    BoolNand: BoolTerm -> BoolTerm -> BoolExpr;
-    -- not P and not Q
-    BoolNor: BoolTerm -> BoolTerm -> BoolExpr;
+    -- p (is | isn't) q, p (es | está | no es | no está) q
+    BoolExpr1 : BoolPol -> BoolTerm -> BoolExpr ;
+    -- p (is | isn't) q <BoolOper> r (is | isn't) s
+    -- p (es | está | no es | no está) q <BoolOper> r (es | está | no es | no está) s
+    BoolExpr2 : BoolPol -> BoolTerm -> BoolOper -> BoolPol -> BoolTerm -> BoolExpr ;
 
+    -- FUNCTION
+    -- or, o
+    BoolOr : BoolOper ;
+    -- either ... or ..., o ... o ...
+    BoolXor : BoolOper ;
+    -- and, y
+    BoolAnd : BoolOper ;
+    -- negativePol
+    BoolNot : BoolPol ;
+    -- positivePol
+    BoolPass : BoolPol ;
+
+
+  -- CONTEXT
   cat
-    Desc;
-    Rule;
-    Action;
-    Player;
-    Location;
-    Hand;
-    Pile;
+    Set ; -- NP
+    Player ; -- NP
+    Action ; -- V2
+    Location ; -- NP
 
   fun
-    ActivePlayer, InactivePlayer: Player;
+    -- PLAYER
+    -- you, tú
+    ActivePlayer : Player ;
+    -- your opponent, tu oponente
+    InactivePlayer : Player ;
 
-    PlayerHand: Player -> Hand;
-    PlayerDeck: Player -> Pile;
-    PlayerDiscardPile: Player -> Pile;
+    -- ACTION
+    -- play, jugar
+    PlayAction : Action ;
+    -- draw, robar
+    DrawAction : Action ;
+    -- discard, descartar
+    DiscardAction : Action ;
+    -- reveal, revelar
+    RevealAction : Action ;
 
-    HandLocation: Hand -> Location;
-    PileLocation: Pile -> Location;
+    -- LOCATION
+    -- (your | your opponent's) hand, tu mano | la mano de tu oponente
+    HandLocation : Player -> Location ;
+    -- (your | your opponent's) deck, tu mazo | el mazo de tu oponente
+    DeckLocation : Player -> Location ;
+    -- (your | your opponent's) discard pile, tu pila de descarte | la pila de descarte de tu oponente
+    -- tu pila de descarte | la pila de descarte de tu oponente
+    DiscardPileLocation : Player -> Location ;
 
-    LocationSize: Location -> NatTerm;
+    -- SET
+    -- this card, esta carta
+    ThisCard : Set ;
+    -- a card from <Location>, una carta de <Location>
+    CardLocation : Location -> Set ;
+    -- all the cards from <Location>, todas las cartas de <Location>
+    AllLocation : Location -> Set ;
+    -- <Nat> cards from <Location>, <Nat> cartas de <Location>
+    NatLocation : Nat -> Location -> Set ;
+    -- as many cards as <NatExpr> from <Location>
+    -- tantas cartas como <NatExpr> de <Location>
+    NatExprLocation : NatExpr -> Location -> Set ;
+    -- <Set> if <BoolExpr>, <Set> si <BoolExpr>
+    ConditionalSet : Set -> BoolExpr -> Set ;
 
-    DrawAction: Player -> Pile -> Quantifier -> Action;
-    DiscardAction: Player -> Hand -> Quantifier -> Action;
 
-    SimpleRule: Action -> Rule;
-    TestBoolExpr: BoolExpr -> Rule;
-    ConditionalRule: BoolExpr -> Action -> Rule;
+  -- MORPHOLOGY
+  cat
+    SimpleInst ; -- S
+    DependentInst ; -- [S] {2}
+    IndependentInst ; -- [S] {2}
+    Instruction ; -- S
+    Rule ; -- S
+    Description ; -- Text
+    Begin ; -- Str
 
-    Description: Rule -> Desc;
+  fun
+    -- INSTRUCTION
+    -- your opponent draws 2 cards | etc
+    -- tu oponente roba 2 cartas | etc
+    UseSimpleInst : Player -> Action -> Set -> SimpleInst ;
+    SimpleInstruction : SimpleInst -> Instruction ;
+    -- your opponent draws 2 cards and they discard them | etc
+    -- tu oponente roba 2 cartas y las descarta | etc
+    UseDependentInst : Player -> Action -> SimpleInst -> DependentInst ;
+    DependentInstruction : DependentInst -> Instruction ;
+    -- your opponent draws 2 cards and they discard a card | etc
+    -- tu oponente roba 2 cartas y éste descarta una carta | etc
+    UseIndependentInst : SimpleInst -> SimpleInst -> IndependentInst ;
+    IndependentInstruction : IndependentInst -> Instruction ;
+    -- your opponent discards a card, they draw 2 cards and they reveal them | etc
+    -- tu oponente descarta una carta, éste roba 2 cartas y éste las revela | etc
+    TripleDependentInst : SimpleInst -> DependentInst -> Instruction ;
+    -- your opponent discards a card, they draw a card and they reveal a card | etc
+    -- tu oponente descarta una carta, éste roba una carta y éste revela una carta | etc
+    TripleIndependentInst : SimpleInst -> IndependentInst -> Instruction ;
+
+    -- RULE
+    -- draw 2 cards | etc, roba 2 cartas | etc
+    SimpleRule : Instruction -> Rule ;
+    -- if <BoolExpr> then <Instruction> | si <BoolExpr> entonces <Instruction>
+    ConditionRule : BoolExpr -> Instruction -> Rule ;
+    -- when <Trigger> : <Instruction>
+    TriggerRule : Event -> Instruction -> Rule ;
+    -- when <Trigger> : if <BoolExpr> then <Instruction>
+    TriggerConditionRule : Event -> BoolExpr -> Instruction -> Rule ;
+    -- <Rule>. <Description>
+    AddRule : Rule -> Description -> Description ;
+    -- <Rule>.
+    UseRule : Rule -> Description ;
+    -- <Description>.
+    UseBegin : Description -> Begin ;
 }

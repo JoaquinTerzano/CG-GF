@@ -1,252 +1,404 @@
 incomplete concrete CGI of CG =
-    open Syntax, LexCG, Prelude, CommonRomance in {
+  open Syntax, Extend, Func, LexCG, Prelude, CommonRomance in {
 
-  -- DATA
-  oper
-    -- BIND es un token especial en GF que evita el espacio entre tokens
-    bind: Str -> Str -> Str = \x,y -> x ++ BIND ++ y;
-    
-    -- Función para poner comillas: "texto"
-    quote: Str -> Str = \s -> "\"" ++ BIND ++ s ++ BIND ++ "\"";
-
-    -- Función auxiliar para crear "clave":"valor"
-    kv: Str -> Str -> Str = \k,v -> quote k ++ bind ":" v;
-
-    -- Generador de JSON: {"func":"nombre", "args":[...]}
-    str: {func: Str; args: Str} -> Str = \dict -> 
-      "{" ++ BIND ++ 
-      kv "func" (quote dict.func) ++ BIND ++ "," ++ BIND ++ 
-      kv "args" ("[" ++ BIND ++ dict.args ++ BIND ++ "]") ++ BIND ++ 
-      "}";
-
-    -- Auxiliar para separar argumentos con coma sin espacios: arg1,arg2
-    comma: Str -> Str -> Str = \x,y -> x ++ BIND ++ "," ++ BIND ++ y;
-
-  -- NATURAL NUMBERS
+  -- NATURAL
   lincat
-    Nat = {s: Digits; value: Str; lock_Nat: {}}; 
-    NatTerm = {s: NP; value: {func: Str; args: Str}; lock_NatTerm: {}}; 
-    NatExpr = {s: NP; value: {func: Str; args: Str}; lock_NatExpr: {}}; 
+    Nat = {s : Digits ; value : Dict ; lock_Nat : {}} ; 
+    NatTerm = {s : NP ; value : Dict ; lock_NatTerm : {}} ; 
+    NatExpr = {s : NP ; value : Dict ; lock_NatExpr : {}} ;
+    NatOper = {s : Prep ; value : Str ; lock_NatOper : {}} ;
+    NatRel = {s : A2 ; value : Str ; lock_NatRel : {}} ;
 
   oper
-    -- 1, 2, ..., 99
-    mkNat: Str -> Nat = \s -> {s = mkDigits s; value = s; lock_Nat = <>};
-
-    -- X + Y, etc
-    mkNatExpr: Str -> Prep -> NatTerm -> NatTerm -> NatExpr = 
-      \symbol, prep, x, y -> {
-        s = mkNP x.s (mkAdv prep y.s);
-        value = {func = symbol; args = comma (str x.value) (str y.value)};
-        lock_NatExpr = <>
-      };
-
-    -- X > Y, etc
-    mkBoolTerm: Str -> A2 -> NatExpr -> NatExpr -> BoolTerm = 
-      \symbol, adj, x, y -> {
-        s = mkCl x.s adj y.s;
-        value = {func = symbol; args = comma (str x.value) (str y.value)};
-        pol = positivePol;
-        lock_BoolTerm = <>
-      };
+    mkNat : Str -> Nat ;
+    mkNat s = {s = mkDigits s ; value = val "natural" s ; lock_Nat = <>} ;
 
   lin
-    -- Hardcodeados porque no queda otra
-    n1 = mkNat "1";   n2 = mkNat "2";   n3 = mkNat "3";   n4 = mkNat "4";   n5 = mkNat "5";   n6 = mkNat "6";   n7 = mkNat "7";   n8 = mkNat "8";   n9 = mkNat "9";   n10 = mkNat "10";
-    n11 = mkNat "11"; n12 = mkNat "12"; n13 = mkNat "13"; n14 = mkNat "14"; n15 = mkNat "15"; n16 = mkNat "16"; n17 = mkNat "17"; n18 = mkNat "18"; n19 = mkNat "19"; n20 = mkNat "20";
-    n21 = mkNat "21"; n22 = mkNat "22"; n23 = mkNat "23"; n24 = mkNat "24"; n25 = mkNat "25"; n26 = mkNat "26"; n27 = mkNat "27"; n28 = mkNat "28"; n29 = mkNat "29"; n30 = mkNat "30";
-    n31 = mkNat "31"; n32 = mkNat "32"; n33 = mkNat "33"; n34 = mkNat "34"; n35 = mkNat "35"; n36 = mkNat "36"; n37 = mkNat "37"; n38 = mkNat "38"; n39 = mkNat "39"; n40 = mkNat "40";
-    n41 = mkNat "41"; n42 = mkNat "42"; n43 = mkNat "43"; n44 = mkNat "44"; n45 = mkNat "45"; n46 = mkNat "46"; n47 = mkNat "47"; n48 = mkNat "48"; n49 = mkNat "49"; n50 = mkNat "50";
-    n51 = mkNat "51"; n52 = mkNat "52"; n53 = mkNat "53"; n54 = mkNat "54"; n55 = mkNat "55"; n56 = mkNat "56"; n57 = mkNat "57"; n58 = mkNat "58"; n59 = mkNat "59"; n60 = mkNat "60";
-    n61 = mkNat "61"; n62 = mkNat "62"; n63 = mkNat "63"; n64 = mkNat "64"; n65 = mkNat "65"; n66 = mkNat "66"; n67 = mkNat "67"; n68 = mkNat "68"; n69 = mkNat "69"; n70 = mkNat "70";
-    n71 = mkNat "71"; n72 = mkNat "72"; n73 = mkNat "73"; n74 = mkNat "74"; n75 = mkNat "75"; n76 = mkNat "76"; n77 = mkNat "77"; n78 = mkNat "78"; n79 = mkNat "79"; n80 = mkNat "80";
-    n81 = mkNat "81"; n82 = mkNat "82"; n83 = mkNat "83"; n84 = mkNat "84"; n85 = mkNat "85"; n86 = mkNat "86"; n87 = mkNat "87"; n88 = mkNat "88"; n89 = mkNat "89"; n90 = mkNat "90";
-    n91 = mkNat "91"; n92 = mkNat "92"; n93 = mkNat "93"; n94 = mkNat "94"; n95 = mkNat "95"; n96 = mkNat "96"; n97 = mkNat "97"; n98 = mkNat "98"; n99 = mkNat "99";
+    -- tristemente hardcodeados
+    n2 = mkNat "2" ; n3 = mkNat "3" ; n4 = mkNat "4" ; n5 = mkNat "5" ;   
+    n6 = mkNat "6" ; n7 = mkNat "7" ; n8 = mkNat "8" ; n9 = mkNat "9" ;
+
+    -- TERM
+    -- <Nat> cards, <Nat> cartas
+    -- Number : Nat -> NatTerm ;
+    Number n = {s = mkNP (mkDet n.s) card_N ; value = n.value ; lock_NatTerm = <>} ;
+
+    -- the size of <Location>, el tamaño de <Location>
+    -- Size : Location -> NatTerm ;
+    Size loc = {s = mkNP (mkNP the_Det size_N) (mkAdv possess_Prep loc.s) ; value = val "size" loc.value ; lock_NatTerm = <>} ;
 
     -- EXPRESSION
-    NatNatTerm n = {s = mkNP (mkDet n.s) card_N; value = {func = "natural"; args = n.value}; lock_NatTerm = <>};
-    NatTermExpr n = {s = n.s; value = n.value; lock_NatExpr = <>}; 
-    Add = mkNatExpr "+" plus_Prep;
-    Multiply = mkNatExpr "*" times_Prep;
+    -- <NatTerm>
+    -- NatExpr1 : NatTerm -> NatExpr ;
+    NatExpr1 n = {s = n.s ; value = n.value ; lock_NatExpr = <>} ;
 
-    -- RELATION
-    Less = mkBoolTerm "<" less_than_A2;
-    More = mkBoolTerm ">" more_than_A2;
-    Equal = mkBoolTerm "==" equal_to_A2;
-    NotEq = mkBoolTerm "!=" not_equal_to_A2;
-    LessEq = mkBoolTerm "<=" less_than_or_equal_to_A2;
-    MoreEq = mkBoolTerm ">=" more_than_or_equal_to_A2;
+    -- <NatTerm> <NatOper> <NatTerm>
+    -- NatExpr2 : NatTerm -> NatOper -> NatTerm -> NatExpr ;
+    NatExpr2 x op y = {s = mkNP x.s (mkAdv op.s y.s) ; value = val op.value x.value y.value ;
+      lock_NatExpr = <>} ;
 
-  -- QUANTIFIER
-  lincat
-    Quantifier = {s: Det; value: {func: Str; args: Str}; lock_Quantifier: {}};
+    -- FUNCTION
+    -- plus, más
+    -- NatAdd : NatOper ;
+    NatAdd = {s = plus_Prep ; value = "add" ; lock_NatOper = <>} ;
 
-  lin
-    NatQuant n = {
-      s = mkDet n.s;
-      value = {func = "natural"; args = n.value};
-      lock_Quantifier = <>
-    };
+    -- times, por
+    -- NatMult : NatOper ;
+    NatMult = {s = times_Prep ; value = "multiply" ; lock_NatOper = <>} ;
 
-    AllQuant = {
-      s = every_Det;
-      value = {func = "logical"; args = quote "all"};
-      lock_Quantifier = <>
-    };
+    -- less than, menor que
+    -- NatLess : NatRel ;
+    NatLess = {s = less_than_A2 ; value = "less" ; lock_NatRel = <>} ;
 
-    AtLeast n = {
-      s = mkDet (mkCard at_least_AdN (mkCard n.s));
-      value = {func = "relational"; args = comma (quote ">=") n.value};
-      lock_Quantifier = <>
-    };
+    -- more than, mayor que
+    -- NatMore : NatRel ;
+    NatMore = {s = more_than_A2 ; value = "more" ; lock_NatRel = <>} ;
 
-    AtMost n = {
-      s = mkDet (mkCard at_most_AdN (mkCard n.s));
-      value = {func = "relational"; args = comma (quote "<=") n.value};
-      lock_Quantifier = <>
-    };
+    -- equal to, igual a
+    -- NatEqual : NatRel ;
+    NatEqual = {s = equal_to_A2 ; value = "equal" ; lock_NatRel = <>} ;
+
+    -- not equal to, distinto de
+    -- NatNotEqual : NatRel ;
+    NatNotEqual = {s = not_equal_to_A2 ; value = "not_equal" ; lock_NatRel = <>} ;
+
+    -- at most, como mucho
+    -- NatLessEqual : NatRel ;
+    NatLessEqual = {s = at_most_A2 ; value = "less_equal" ; lock_NatRel = <>} ;
+
+    -- at least, como mínimo
+    -- NatMoreEqual : NatRel ;
+    NatMoreEqual = {s = at_least_A2 ; value = "more_equal" ; lock_NatRel = <>} ;
+
 
   -- BOOLEAN
   lincat
-    BoolTerm = {s: Cl; value: {func: Str; args: Str}; pol: Pol; lock_BoolTerm: {}}; 
-    BoolExpr = {s: S; value: {func: Str; args: Str}; lock_BoolExpr: {}}; 
-
-  oper
-    -- Positive
-    mkBoolExprPos = overload {
-      -- P
-      mkBoolExprPos: BoolTerm -> BoolExpr =
-        \p -> {
-          s = mkS presentTense simultaneousAnt positivePol p.s;
-          value = p.value;
-          lock_BoolExpr = <>
-      };
-      -- P or Q, P and Q
-      mkBoolExprPos: Str -> Conj -> BoolTerm -> BoolTerm -> BoolExpr = 
-        \symbol, conj, p, q -> {
-          s = mkS conj (mkS presentTense simultaneousAnt positivePol p.s) 
-              (mkS presentTense simultaneousAnt positivePol q.s);
-          value = {func = symbol; args = comma (str p.value) (str q.value)};
-          lock_BoolExpr = <>
-      }
-    };
-
-    -- Negative
-    mkBoolExprNeg = overload {
-      -- not P
-      mkBoolExprNeg: BoolTerm -> BoolExpr =
-        \p -> {
-          s = mkS presentTense simultaneousAnt negativePol p.s;
-          value = {func = "not"; args = str p.value};
-          lock_BoolExpr = <>
-      };
-      -- not P or not Q, not P and not Q
-      mkBoolExprNeg: Str -> Conj -> BoolTerm -> BoolTerm -> BoolExpr = 
-        \symbol, conj, p, q -> {
-          s = mkS conj (mkS presentTense simultaneousAnt negativePol p.s) 
-              (mkS presentTense simultaneousAnt negativePol q.s);
-          value = {
-            func = "not";
-            args = str {func = symbol; args = comma (str p.value) (str q.value)}};
-          lock_BoolExpr = <>
-        }
-    };
+    BoolTerm = {s : Cl ; value : Dict ; lock_BoolTerm : {}} ; 
+    BoolExpr = {s : S ; value : Dict ; lock_BoolExpr : {}} ;
+    BoolOper = {s : Conj ; value : Str ; lock_BoolOper : {}} ;
+    BoolPol = {s : Pol ; value : Str ; lock_BoolPol : {}} ;
+    Event = {s : S ; value : Dict ; lock_Event : {}} ;
 
   lin
-    Bool = mkBoolExprPos;
-    BoolNot = mkBoolExprNeg;
-    BoolAnd = mkBoolExprPos "and" and_Conj;
-    BoolOr = mkBoolExprPos "or" or_Conj;
-    BoolNand = mkBoolExprNeg "and" or_Conj;
-    BoolNor = mkBoolExprNeg "or" and_Conj;
+    -- TERM
+    -- <NatExpr> is <NatRel> <NatExpr>, <NatExpr> es <NatRel> <NatExpr>
+    -- Compare : NatExpr -> NatRel -> NatExpr -> BoolTerm ;
+    Compare x rel y = {s = expr x.s rel.s y.s ; value = val rel.value x.value y.value ;
+      lock_BoolTerm = <>} ;
 
+    -- <Location> is empty, <Location> está vacío
+    -- Empty : Location -> BoolTerm ;
+    Empty loc = {s = mkCl loc.s empty_A ; value = val "empty" loc.value ;
+      lock_BoolTerm = <>} ;
+
+    -- you play this card | etc | tú juegas esta carta | etc
+    -- Trigger : Action -> BoolExpr ;
+    Trigger action = {s = expr positivePol (mkCl you_NP action.s (mkNP this_Det card_N)) ;
+      value = val "event" (val action.value (val "player" "active") (val "this")) ;
+      lock_Event = <>} ;
+
+    -- EXPRESSION
+    -- p (is | isn't) q, p (es | está | no es | no está) q
+    -- BoolExpr1 : BoolPol -> BoolTerm -> BoolExpr ;
+    BoolExpr1 pol p = {s = expr pol.s p.s ; value = val pol.value p.value ; lock_BoolExpr = <>} ;
+
+    -- p (is | isn't) q <BoolOper> r (is | isn't) s
+    -- p (es | está | no es | no está) q <BoolOper> r (es | está | no es | no está) s
+    -- BoolExpr2 : BoolPol -> BoolTerm -> BoolOper -> BoolPol -> BoolTerm -> BoolExpr ;
+    BoolExpr2 polp p op polq q = {
+      s = expr polp.s p.s op.s polq.s q.s ;
+      value = val op.value polp.value p.value polq.value q.value ;
+      lock_BoolExpr = <>} ;
+
+    -- FUNCTION
+    -- or, o
+    -- BoolOr : BoolOper ;
+    BoolOr = {s = or_Conj ; value = "or" ; lock_BoolOper = <>} ;
+
+    -- either ... or ..., o ... o ...
+    -- BoolXor : BoolOper ;
+    BoolXor = {s = either7or_DConj ; value = "xor" ; lock_BoolOper = <>} ;
+
+    -- and, y
+    -- BoolAnd : BoolOper ;
+    BoolAnd = {s = and_Conj ; value = "and" ; lock_BoolOper = <>} ;
+
+    -- negativePol
+    -- BoolNot : BoolOper ;
+    BoolNot = {s = negativePol ; value = "not" ; lock_BoolPol = <>} ;
+
+    -- positivePol
+    -- BoolPass : BoolOper ;
+    BoolPass = {s = positivePol ; value = "pass" ; lock_BoolPol = <>} ;
+
+
+  -- CONTEXT
   lincat
-    Rule = {s: S; value: {func: Str; args: Str}; lock_Rule: {}};
-    Action = {s: S; value: {func: Str; args: Str}; lock_Action: {}};
-    Player = {s: NP; value: {func: Str; args: Str}; lock_Player: {}};
-    Location = {s: NP; value: {func: Str; args: Str}; lock_Location: {}};
-    Hand = {s: NP; value: {func: Str; args: Str}; lock_Hand: {}};
-    Pile = {s: NP; value: {func: Str; args: Str}; lock_Pile: {}};
-    Desc = {s: Str; value: Str};
+    Set = {s : NP ; ref : NP ; value : Dict ; lock_Set : {}} ;
+    Player = {s : NP ; ref : NP ; role : Role ; value : Dict ; lock_Player : {}} ;
+    Action = {s : V2 ; value : Str ; act : Act ; lock_Action : {}} ;
+    Location = {s : NP ; value : Dict ; lock_Location : {}} ;
+
+  param
+    Role = Active | Inactive ;
+    Domain = Hand | Deck | DiscardPile ;
+    Act = Play | Draw | Discard | Reveal ;
 
   oper
-    mkCardCN: Location -> CN = \loc ->
-      mkCN (mkCN card_N) (mkAdv from_Prep loc.s);
-    
-    mkCardNP: Location -> Quantifier -> NP = \loc, quant ->
-      mkNP quant.s (mkCardCN loc);
-    
-    mkLocation = overload {
-      mkLocation: Hand -> Location = \hand ->
-        {s = hand.s; value = hand.value; lock_Location = <>};
-      mkLocation: Pile -> Location = \pile ->
-        {s = pile.s; value = pile.value; lock_Location = <>};
-    };
+    mkPlayer : Role -> Player ;
+    mkPlayer role = case role of {
+      -- you, tú
+      Active => {s = you_NP ; ref = you_NP ; role = Active ; value = val "player" "active" ;
+        lock_Player = <>} ;
+      -- your opponent, tu oponente
+      Inactive => {s = mkNP youSg_Pron opponent_N ; ref = they_NP ; role = Inactive ;
+        value = val "player" "inactive" ;
+        lock_Player = <>}
+    } ;
+
+    mkLocation : Role -> Domain -> Location ;
+    mkLocation role domain = case role of {
+      Active => let player = mkPlayer Active in case domain of {
+        -- your hand, tu mano
+        Hand => {s = mkNP youSg_Pron hand_N ; value = val "location" "hand" player.value ;
+          lock_Location = <>} ;
+        -- your deck, tu mazo
+        Deck => {s = mkNP youSg_Pron deck_N ; value = val "location" "deck" player.value ;
+          lock_Location = <>} ;
+        -- your discard pile, tu pila de descarte
+        DiscardPile => {s = mkNP youSg_Pron discard_pile_N ;
+          value = val "location" "discard_pile" player.value ;
+          lock_Location = <>}
+      } ;
+      Inactive => let player = mkPlayer Inactive in case domain of {
+        -- your opponent's hand, la mano de tu oponente
+        Hand => {s = possessive player.s hand_N ;
+          value = val "location" "hand" player.value ; lock_Location = <>} ;
+        -- your opponent's deck, el mazo de tu oponente
+        Deck => {s = possessive player.s deck_N ;
+          value = val "location" "deck" player.value ; lock_Location = <>} ;
+        -- your opponent's discard pile, la pila de descarte de tu oponente
+        DiscardPile => {s = possessive player.s discard_pile_N ;
+          value = val "location" "discard_pile" player.value ; lock_Location = <>}
+      }
+    } ;
+
+    mkAction : Act -> Action ;
+    mkAction act = case act of {
+      Play => {s = play_V2 ; value = "play" ; act = Play ; lock_Action = <>} ;
+      Draw => {s = draw_V2 ; value = "draw" ; act = Draw ; lock_Action = <>} ;
+      Discard => {s = discard_V2 ; value = "discard" ; act = Discard ; lock_Action = <>} ;
+      Reveal => {s = reveal_V2 ; value = "reveal" ; act = Reveal ; lock_Action = <>}
+    } ;
 
   lin
-    ActivePlayer = {
-      s = mkNP the_Det (mkCN active_A player_N);
-      value = {func = "player"; args = quote "active"};  -- quote disponible
-      lock_Player = <>
-    };
+    -- PLAYER
+    -- you, tú
+    -- ActivePlayer : Player ;
+    ActivePlayer = mkPlayer Active ;
+
+    -- your opponent, tu oponente
+    -- InactivePlayer : Player ;
+    InactivePlayer = mkPlayer Inactive ;
+
+    -- ACTION
+    -- play, jugar
+    -- PlayAction : Action ;
+    PlayAction = mkAction Play ;
+    -- draw, robar
+    -- DrawAction : Action ;
+    DrawAction = mkAction Draw ;
+    -- discard, descartar
+    -- DiscardAction : Action ;
+    DiscardAction = mkAction Discard ;
+    -- reveal, revelar
+    -- RevealAction : Action ;
+    RevealAction = mkAction Reveal ;
+
+    -- LOCATION
+    -- (your | your opponent's) hand, tu mano | la mano de tu oponente
+    -- HandLocation : Player -> Location ;
+    HandLocation player = mkLocation player.role Hand ;
+
+    -- (your | your opponent's) deck, tu mazo | el mazo de tu oponente
+    -- DeckLocation : Player -> Location ;
+    DeckLocation player = mkLocation player.role Deck ;
+
+    -- (your | your opponent's) discard pile
+    -- tu pila de descarte | la pila de descarte de tu oponente
+    -- DiscardPileLocation : Player -> Location ;
+    DiscardPileLocation player = mkLocation player.role DiscardPile ;
+
+    -- SET
+    -- this card, esta carta
+    -- ThisCard : Set ;
+    ThisCard = {s = mkNP this_Det card_N ; ref = card_ref_NP ; value = val "this" ;
+      lock_Set = <>} ;
+
+    -- a card from <Location>, una carta de <Location>
+    -- CardLocation : Location -> Set ;
+    CardLocation loc = {s = cards from_Prep loc.s ; ref = card_ref_NP ;
+      value = val "select" loc.value (val "natural" "1") ;
+      lock_Set = <>} ;
+
+    -- all the cards from <Location>, todas las cartas de <Location>
+    -- AllLocation : Location -> Set ;
+    AllLocation loc = {s = cards all_Predet from_Prep loc.s ; ref = cards_ref_NP ;
+      value = val "select" loc.value (val "natural" "1") ;
+      lock_Set = <>} ;
+
+    -- <Nat> cards from <Location>, <Nat> cartas de <Location>
+    -- NatLocation : Nat -> Location -> Set ;
+    NatLocation n loc = {s = cards n.s from_Prep loc.s ; ref = cards_ref_NP ;
+      value = val "select" loc.value n.value ;
+      lock_Set = <>} ;
+
+    -- as many cards as <NatExpr> from <Location>
+    -- tantas cartas como <NatExpr> de <Location>
+    -- NatExprLocation : NatExpr -> Location -> Set ;
+    NatExprLocation n loc = {s = cards n.s from_Prep loc.s ; ref = cards_ref_NP ;
+      value = val "select" loc.value n.value ;
+      lock_Set = <>} ;
+
+    -- <Set> if <BoolExpr>, <Set> si <BoolExpr>
+    -- ConditionalSet : Set -> BoolExpr -> Set ;
+    ConditionalSet set con = {s = mkNP set.s (mkAdv if_Subj con.s) ; ref = set.ref ;
+      value = val "conditional" con.value set.value ;
+      lock_Set = <>} ;
+
+
+  -- MORPHOLOGY
+  lincat
+    SimpleInst = {s : S ; ref : NP ; value : Dict ; lock_SimpleInst : {}} ;
+    DependentInst = {s : ListS ; value : Dict ; lock_DependentInst : {}} ;
+    IndependentInst = {s : ListS ; value : Dict ; lock_IndependentInst : {}} ;
+    Instruction = {s : S ; value : Dict ; lock_Instruction : {}} ;
+    Rule = {s : S ; value : Dict ; lock_Rule : {}} ;
+    Description = {s : Text ; value : Str ; lock_Description : {}} ; 
+    Begin = {s : Str ; value : Str ; lock_Begin : {}} ;
+
+  lin
+    -- INSTRUCTION
+    -- your opponent draws 2 cards | etc
+    -- tu oponente roba 2 cartas | etc
+    -- UseSimpleInst : Player -> Action -> Set -> SimpleInst ;
+    UseSimpleInst player action set = {s = inst player.s action.s set.s ;
+      ref = set.ref ;
+      value = val action.value player.value set.value ;
+      lock_SimpleInst = <>} ;
+
+    -- SimpleInstruction : SimpleInst -> Instruction ;
+    SimpleInstruction i = {s = i.s ; value = i.value ; lock_Instruction = <>} ;
+
+    -- your opponent draws 2 cards and they discard them | etc
+    -- tu oponente roba 2 cartas y las descarta | etc
+    -- UseDependentInst : Player -> Action -> SimpleInst -> DependentInst ;
+    UseDependentInst player action i = {s = mkListS i.s (inst player.s action.s i.ref) ;
+      value = val "and" i.value (val action.value player.value i.value) ;
+      lock_DependentInst = <>} ;
+
+    -- DependentInstruction : DependentInst -> Instruction ;
+    DependentInstruction i = {s = mkS and_Conj i.s ; value = i.value ; lock_Instruction = <>} ;
+
+    -- your opponent draws 2 cards and they discard a card | etc
+    -- tu oponente roba 2 cartas y éste descarta una carta | etc
+    -- UseIndependentInst : SimpleInst -> SimpleInst -> IndependentInst ;
+    UseIndependentInst i j = {s = mkListS i.s j.s ; value = val "and" i.value j.value ;
+      lock_IndependentInst = <>} ;
+
+    -- IndependentInstruction : IndependentInst -> Instruction ;
+    IndependentInstruction i = {s = mkS and_Conj i.s ; value = i.value ; lock_Instruction = <>} ;
+
+    -- your opponent discards a card, they draw 2 cards and they reveal them | etc
+    -- tu oponente descarta una carta, éste roba 2 cartas y éste las revela | etc
+    -- TripleDependentInst : SimpleInst -> DependentInst -> Instruction ;
+    TripleDependentInst i j = {s = mkS and_Conj (mkListS i.s j.s) ;
+      value = val "and" i.value j.value ;
+      lock_Instruction = <>} ;
+
+    -- your opponent discards a card, they draw a card and they reveal a card | etc
+    -- tu oponente descarta una carta, éste roba una carta y éste revela una carta | etc
+    -- TripleIndependentInst : SimpleInst -> IndependentInst -> Instruction ;
+    TripleIndependentInst i j = {s = mkS and_Conj (mkListS i.s j.s) ;
+      value = val "and" i.value j.value ;
+      lock_Instruction = <>} ;
+
+    -- RULE
+    -- you draw 2 cards | etc, tú robas 2 cartas | etc
+    -- SimpleRule : Instruction -> Rule ;
+    SimpleRule i = {s = i.s ;
+      value = val "conditional" (val "event" (val "play" (
+        val "player" "active") (val "this"))) i.value ;
+      lock_Rule = <>} ;
+
+    -- if <BoolExpr> then <Instruction>, si <BoolExpr> entonces <Instruction>
+    -- ConditionRule : BoolExpr -> Instruction -> Rule ;
+    ConditionRule con ins = {s = mkS condition_Conj con.s ins.s ;
+      value = val "conditional" (val "event" (val "play" (val "player" "active")
+        (val "this"))) (val "conditional" con.value ins.value) ;
+      lock_Rule = <>} ;
     
-    InactivePlayer = {
-      s = mkNP the_Det (mkCN inactive_A player_N);
-      value = {func = "player"; args = quote "inactive"};
-      lock_Player = <>
-    };
+    -- TriggerRule : Event -> Instruction -> Rule ;
+    TriggerRule eve ins = {s = mkS trigger_Conj eve.s ins.s ;
+      value = val "conditional" eve.value ins.value ;
+      lock_Rule = <>} ;
 
-    PlayerHand player = {
-      s = mkNP (mkNP the_Det hand_N) (mkAdv possess_Prep player.s);
-      value = {func = "hand"; args = str player.value};  -- str disponible
-      lock_Hand = <>
-    };
-    
-    PlayerDeck player = {
-      s = mkNP (mkNP the_Det deck_N) (mkAdv possess_Prep player.s);
-      value = {func = "deck"; args = str player.value};
-      lock_Pile = <>
-    };
-    
-    PlayerDiscardPile player = {
-      s = mkNP (mkNP the_Det discard_pile_N) (mkAdv possess_Prep player.s);
-      value = {func = "discard_pile"; args = str player.value};
-      lock_Pile = <>
-    };
+    -- when <Trigger> : if <BoolExpr> then <Instruction>
+    -- TriggerConditionRule : Event -> BoolExpr -> Instruction -> Rule ;
+    TriggerConditionRule eve con ins = {s = mkS trigger_Conj eve.s (mkS condition_Conj con.s ins.s) ;
+      value = val "conditional" eve.value (val "conditional" con.value ins.value) ;
+      lock_Rule = <>} ;
 
-    HandLocation = mkLocation;
-    PileLocation = mkLocation;
+    -- <Rule>. <Description>
+    -- AddRule : Rule -> Description -> Description ;
+    AddRule r d = {s = mkText (mkUtt r.s) fullStopPunct d.s ;
+      value = (str r.value) ++ BIND ++ "," ++ d.value ;
+      lock_Description = <>} ;
 
-    LocationSize loc = {
-      s = mkNP (mkNP the_Det size_N) (mkAdv possess_Prep loc.s);
-      value = {func = "size"; args = str loc.value};
-      lock_NatTerm = <>
-    };
+    -- <Rule>.
+    -- UseRule : Rule -> Description ;
+    UseRule rule = {s = mkText rule.s ;
+      value = str rule.value ;
+      lock_Description = <>};
 
-    DrawAction player pile n = {
-      s = mkS presentTense simultaneousAnt positivePol (
-        mkCl player.s draw_V (mkCardNP (mkLocation pile) n));
-      value = {
-        func = "draw";
-        args = comma (str player.value) (comma (str pile.value) (str n.value))  -- comma y str disponibles
-      };
-      lock_Action = <>
-    };
-    
-    DiscardAction player hand n = {
-      s = mkS presentTense simultaneousAnt positivePol (
-        mkCl player.s discard_V (mkCardNP (mkLocation hand) n));
-      value = {
-        func = "discard";
-        args = comma (str player.value) (comma (str hand.value) (str n.value))
-      };
-      lock_Action = <>
-    };
 
-    SimpleRule eff = {s = eff.s; value = eff.value; lock_Rule = <>};
-    TestBoolExpr con = {s = con.s; value = con.value; lock_Rule = <>};
-    ConditionalRule con eff = {
-      s = mkS (mkAdv if_Subj con.s) eff.s;
-      value = {func = "if"; args = comma (str con.value) (str eff.value)};
-      lock_Rule = <>
-    };
+  -- SYNTAX HELPERS
+  oper
+    cards = overload {
+      -- a card
+      cards : NP = mkNP a_Det card_N ;
+      -- 2 cards | 3 cards | ...
+      cards : Digits -> NP = \x -> mkNP (mkDet x) card_N ;
+      -- as many cards as the size of your hand | etc
+      cards : NP -> NP = \x -> mkNP (mkNP as_many_Det card_N) (mkAdv as_Prep x) ;
+      -- a card from your hand | etc
+      cards : Prep -> NP -> NP = \prep, mod ->
+        mkNP (mkNP a_Det card_N) (mkAdv prep mod) ;
+      -- all the cards from your hand | etc
+      cards : Predet -> Prep -> NP -> NP = \predet, prep, mod ->
+        mkNP (mkNP predet (mkNP thePl_Det card_N)) (mkAdv prep mod) ;
+      -- 2 cards from your hand | etc
+      cards : Digits -> Prep -> NP -> NP = \x, prep, mod ->
+        mkNP (mkNP (mkDet x) card_N) (mkAdv prep mod) ;
+      -- as many cards from your deck as the size of your hand | etc
+      cards : NP -> Prep -> NP -> NP = \x, prep, mod -> mkNP (mkNP (mkNP as_many_Det card_N)
+        (mkAdv prep mod)) (mkAdv as_Prep x)
+    } ;
+
+    expr = overload {
+      -- the size of your hand is equal to the size of your deck, etc
+      expr : NP -> A2 -> NP -> Cl = \p, rel, q -> mkCl p rel q ;
+      -- you don't play a card, etc
+      expr : Pol -> Cl -> S = \pol, p -> mkS presentTense simultaneousAnt pol p ;
+      -- you play a card or the size of your deck isn't more than 5, etc
+      expr : Pol -> Cl -> Conj -> Pol -> Cl -> S = \polp, p, op, polq, q ->
+        mkS op (mkS presentTense simultaneousAnt polp p) (
+          mkS presentTense simultaneousAnt polq q)
+    } ;
+
+    -- your opponent draws 2 cards | etc
+    -- tu oponente roba 2 cartas | etc
+    inst : NP -> V2 -> NP -> S ;
+    inst player_np action_v2 set_np = mkS presentTense simultaneousAnt positivePol (
+      mkCl player_np action_v2 set_np) ;
 }
