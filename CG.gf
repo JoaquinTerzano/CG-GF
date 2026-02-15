@@ -110,13 +110,18 @@ abstract CG = open Syntax in {
     RevealAction : Action ;
 
     -- LOCATION
-    -- (your | your opponent's) hand, tu mano | la mano de tu oponente
-    HandLocation : Player -> Location ;
-    -- (your | your opponent's) deck, tu mazo | el mazo de tu oponente
-    DeckLocation : Player -> Location ;
-    -- (your | your opponent's) discard pile, tu pila de descarte | la pila de descarte de tu oponente
-    -- tu pila de descarte | la pila de descarte de tu oponente
-    DiscardPileLocation : Player -> Location ;
+    -- your hand | tu mano
+    HandActiveLocation : Location ;
+    -- your opponent's hand | la mano de tu oponente
+    HandInactiveLocation : Location ;
+    -- your deck | tu mazo
+    DeckActiveLocation : Location ;
+    -- your opponent's deck | el mazo de tu oponente
+    DeckInactiveLocation : Location ;
+    -- your discard pile | tu pila de descarte
+    DiscardPileActiveLocation : Location ;
+    -- your opponent's discard pile | la pila de descarte de tu oponente
+    DiscardPileInactiveLocation : Location ;
 
     -- SET
     -- this card, esta carta

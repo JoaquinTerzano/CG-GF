@@ -50,6 +50,6 @@ instance LexCGSpa of LexCG = open SyntaxSpa, ParadigmsSpa, (M = MorphoSpa), Prel
     card_ref_NP = she_NP ;
     cards_ref_NP = mkNP (M.agr2pron ! {g=M.Fem ; n=M.Pl ; p=M.P3}) ;
 
-    trigger_Conj = {s1 = "cuando" ; s2 = BIND ++ ":" ; n = M.Sg ; lock_Conj = <>} ;
-    condition_Conj = {s1 = "si" ; s2 = BIND ++ "," ; n = M.Sg ; lock_Conj = <>} ;
+    trigger_Conj = {s1 = "cuando" ; s2 = ":" ; n = M.Sg ; lock_Conj = <>} ;
+    condition_Conj = {s1 = "si" ; s2 = "," ; n = M.Sg ; lock_Conj = <>} ;
 }

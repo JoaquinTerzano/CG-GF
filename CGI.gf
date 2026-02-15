@@ -216,18 +216,29 @@ incomplete concrete CGI of CG =
     RevealAction = mkAction Reveal ;
 
     -- LOCATION
-    -- (your | your opponent's) hand, tu mano | la mano de tu oponente
-    -- HandLocation : Player -> Location ;
-    HandLocation player = mkLocation player.role Hand ;
+    -- your hand | tu mano
+    -- HandActiveLocation : Location ;
+    HandActiveLocation = mkLocation Active Hand ;
 
-    -- (your | your opponent's) deck, tu mazo | el mazo de tu oponente
-    -- DeckLocation : Player -> Location ;
-    DeckLocation player = mkLocation player.role Deck ;
+    -- your opponent's hand | la mano de tu oponente
+    -- HandInactiveLocation : Location ;
+    HandInactiveLocation = mkLocation Inactive Hand ;
 
-    -- (your | your opponent's) discard pile
-    -- tu pila de descarte | la pila de descarte de tu oponente
-    -- DiscardPileLocation : Player -> Location ;
-    DiscardPileLocation player = mkLocation player.role DiscardPile ;
+    -- your deck | tu mazo
+    -- DeckActiveLocation : Location ;
+    DeckActiveLocation = mkLocation Active Deck ;
+
+    -- your opponent's deck | el mazo de tu oponente
+    -- DeckInactiveLocation : Location ;
+    DeckInactiveLocation = mkLocation Inactive Deck ;
+
+    -- your discard pile | tu pila de descarte
+    -- DiscardPileActiveLocation : Location ;
+    DiscardPileActiveLocation = mkLocation Active DiscardPile ;
+
+    -- your opponent's discard pile | la pila de descarte de tu oponente
+    -- DiscardPileInactiveLocation : Location ;
+    DiscardPileInactiveLocation = mkLocation Inactive DiscardPile ;
 
     -- SET
     -- this card, esta carta

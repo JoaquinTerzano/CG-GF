@@ -4,7 +4,7 @@ El proyecto consiste en diseñar el sistema de un juego de cartas y crear una gr
 
 Se definirá un lenguaje natural controlado, es decir, un lenguaje formal subconjunto de un lenguaje natural con restricciones de léxico y de sintaxis.
 
-Se utilizará la herramienta **Grammatical Framework (GL)** diseñada para generar lenguajes naturales junto con la **Resource Grammar Library (RGL)**, una librería extensa con constructores léxicos y sintácticos inteligentes que resuelven la concordancia de muchos idiomas, incluidos el inglés y el español.
+Se utilizará la herramienta [**Grammatical Framework (GL)**](https://www.grammaticalframework.org/) diseñada para generar lenguajes naturales junto con la [**Resource Grammar Library (RGL)**](https://github.com/GrammaticalFramework/gf-rgl), una librería extensa con constructores léxicos y sintácticos inteligentes que resuelven la concordancia de muchos idiomas, incluidos el inglés y el español.
 
 Las cadenas generadas por el lenguaje serán convertidas, por medio de atributos que se definen en las reglas de producción de la gramática, a un archivo JSON con el siguiente formato:
 
@@ -336,84 +336,25 @@ Para mantener una estructura ordenada, se recomienda crear **módulos de recurso
 - `Lex.gf`, `LexEng.gf` y `LexSpa.gf` definen el léxico.
 - `Func.gf` define constructores de atributos con el formato JSON propuesto.
 
-# Ejemplos
+## Restricciones
 
-En esta sección se muestran ejemplos de descripciones que acepta la gramática.
+La gramática implementa todas las funciones definidas en la sección *Funciones* con ciertas restricciones:
 
----
-
-> **Inglés:** When you draw this card: your opponent plays this card.
-
-> **Español:** Cuando tú robas esta carta: tu oponente juega esta carta.
-
-```json
-[{
-    "func": "conditional",
-    "args": [{
-        "func": "event",
-        "args": [{
-            "func": "draw",
-            "args": [{
-                "func": "player",
-                "args": ["active"]
-            }, {
-                "func": "this",
-                "args": [""]
-            }]
-        }]
-    }, {
-        "func": "play",
-        "args": [{
-            "func": "player",
-            "args": ["inactive"]
-        }, {
-            "func": "this",
-            "args": [""]
-        }]
-    }]
-}]
-```
-
----
-
-> **Inglés:** If your hand is empty, you draw 2 cards from your deck.
-
-> **Español:** Si tu mano está vacía, tú robas 2 cartas de tu mazo.
-
-```json
-[{
-    "func": "conditional",
-    "args": [{
-        "func": "event",
-        "args": [{
-            "func": "location",
-            "args": ["hand", {
-                "func": "player",
-                "args": ["active"]
-            }]
-        }]
-    }, {
-        "func": "draw",
-        "args": [{
-            "func": "player",
-            "args": ["active"]
-        }, {
-            "func": "select",
-            "args": [{
-                "func": "location",
-                "args": ["deck", {
-                    "func": "player",
-                    "args": ["active"]
-                }, "2"]
-            }]
-        }]
-    }]
-}]
-```
+- Los números naturales están hardcodeados de 2 a 9.
+- Las funciones `size`, `empty` y `select` solo acepta ubicaciones (tu mano, etc) como conjunto.
+- Las expresiones naturales y booleanas relacionan hasta dos términos.
+- El conjunto de una acción puede ser una acción cuyo conjunto no es una acción.
+- Una regla puede contener un activador, una condición y hasta tres instrucciones.
 
 # Guía de pruebas
 
-Estos son algunos comandos útiles para probar la gramática desde la terminal de GF.
+Esta sección contiene contiene información de ayuda para probar la gramática, ya sea desde una terminal de GF o desde un cuaderno de Jupyter.
+
+## Usar la terminal de GF
+
+Para usar la terminal de GF, primero hay que instalar tanto **GF Core** como la **Resource Grammar Library (RGL)**. Los pasos a seguir se encuentran [aquí](https://www.grammaticalframework.org/download/index-3.12.html).
+
+Luego de instalarlos, se puede probar la gramática desde una terminal de GF en el directorio raíz del proyecto usando los siguientes comandos:
 
 El comando `i` compila una gramática de un archivo `.gf` y la importa para usarla en la terminal.
 
@@ -422,17 +363,18 @@ i CGEng.gf
 i CGSpa.gf
 ```
 
-El comando `gr` genera un árbol sintáctico aleatorio. El parámetro `-depth` limita la profundidad máxima del árbol. El comando `l` lineariza un árbol sintáctico. El parámetro `-unlextext` revierte la tokenización de la cadena, `-table` muestra el valor de la cadena en formato JSON, `-treebank` muestra el árbol sintáctico y `-to_utf8` fuerza el formato UTF-8.
+El comando `gr` genera un árbol sintáctico aleatorio. El parámetro `-depth` limita la profundidad máxima del árbol. El comando `l` lineariza un árbol sintáctico. El parámetro `-unlextext` revierte la tokenización de la cadena, `-table` muestra el valor de la cadena en formato JSON y `-treebank` muestra el árbol sintáctico.
 
 ```
-gr -depth=5 | l -unlextext -table -treebank -to_utf8
+gr -depth=5 | l -unlextext -table -treebank
 ```
 
 El comando `p` parsea una cadena de tokens.
 
 ```
-input: p "you draw all the cards from your deck . "
-output: UseBegin (UseRule (SimpleRule (SimpleInstruction (UseSimpleInst ActivePlayer DrawAction (AllLocation (DeckLocation ?3))))))
+input: p "you draw 2 cards from your deck ."
+
+output: UseBegin (UseRule (SimpleRule (SimpleInstruction (UseSimpleInst ActivePlayer DrawAction (NatLocation n2 DeckActiveLocation)))))
 ```
 
 Mientras se ingresa la cadena, se pueden ver todas las posibles derivaciones del siguiente token presionando la tecla `Tab`.
@@ -440,21 +382,32 @@ Mientras se ingresa la cadena, se pueden ver todas las posibles derivaciones del
 ```
 CG> p ""
 if    when  you   your
+
 CG> p "you "
 discard  draw     play     reveal
+
 CG> p "you draw "
 2     3     4     5     6     7     8     9     a     all   an    as    this
-CG> p "you draw all the cards from your "
+
+CG> p "you draw 2 cards from your "
 deck        discard     hand        opponent's
-CG> p "you draw all the cards from your deck "
+
+CG> p "you draw 2 cards from your deck "
 ,    .    and  if
-CG> p "you draw all the cards from your deck . "
-if    when  you   your
+
+CG> p "you draw 2 cards from your deck ."
+
+UseBegin (UseRule (SimpleRule (SimpleInstruction (UseSimpleInst ActivePlayer DrawAction (NatLocation n2 DeckActiveLocation)))))
 ```
 
-El comando `ps -lextext` convierte una cadena de tokens en una cadena de texto.
+El comando `ps -lextext` convierte una cadena de texto en una cadena de tokens.
 
 ```
-input: ps -lextext "Tu oponente roba 2 cartas de tu mazo y las descarta."
-output: tu oponente roba 2 cartas de tu mazo y las descarta .
+ps -lextext "Tu oponente roba 2 cartas de tu mazo y tu oponente las descarta." | p | l -unlextext -table -treebank
 ```
+
+## Usar Jupyter
+
+El [**binder**](https://github.com/GrammaticalFramework/gf-binder) de GF es una herramienta para usar GF desde un cuaderno de Jupyter sin instalarlo. Simplemente hay que acceder [aquí](https://mybinder.org/v2/gh/GrammaticalFramework/gf-binder/master) para crear una instancia del binder.
+
+En éste repositorio se incluye el archivo de Jupyter `CG.ipynb` que se puede subir al binder para probar la gramática. Solo incluye la versión en inglés ya que el léxico en español utiliza módulos de la RGL que el binder no soporta.

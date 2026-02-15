@@ -26,8 +26,8 @@ instance LexCGEng of LexCG = open SyntaxEng, ParadigmsEng, (M = MorphoEng), Prel
     not_equal_to_A2 = mkA2 "distinct" from_Prep ;
     less_than_A2 = mkA2 "less" than_Prep ;
     more_than_A2 = mkA2 "more" than_Prep ;
-    at_most_A2 = mkA2 "at most" to_Prep ;
-    at_least_A2 = mkA2 "at least" to_Prep ;
+    at_most_A2 = mkA2 "at most" noPrep ;
+    at_least_A2 = mkA2 "at least" noPrep ;
 
     than_Prep = mkPrep "than" ;
     plus_Prep = mkPrep "plus" ;
@@ -46,6 +46,6 @@ instance LexCGEng of LexCG = open SyntaxEng, ParadigmsEng, (M = MorphoEng), Prel
     card_ref_NP = it_NP ;
     cards_ref_NP = they_NP ;
 
-    trigger_Conj = mkConj "when" (BIND ++ ":") singular ;
-    condition_Conj = mkConj "if" (BIND ++ ",") singular ;
+    trigger_Conj = mkConj "when" ":" singular ;
+    condition_Conj = mkConj "if" "," singular ;
 }
