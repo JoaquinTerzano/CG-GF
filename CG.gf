@@ -139,7 +139,7 @@ abstract CG = open Syntax in {
     ConditionalSet : Set -> BoolExpr -> Set ;
 
 
-  -- MORPHOLOGY
+  -- MAIN
   cat
     SimpleInst ; -- S
     DependentInst ; -- [S] {2}

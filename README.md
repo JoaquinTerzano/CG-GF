@@ -19,7 +19,7 @@ utilizando los siguientes tipos:
 - `dict` es un registro con dos campos: `func: str` y `args: list`.
 - `list` es una secuencia de elementos de cualquiera de los tipos mencionados.
 
-Este formato está pensado para usarse como entrada de un intérprete que programa instrucciones utilizando un paradigma puramente funcional. Este enfoque viene dado por la morfología que se adopta comúnmente en este tipo de lenguajes.
+Este formato está pensado para usarse como entrada de un intérprete que programa instrucciones utilizando un paradigma puramente funcional. Este enfoque viene dado por el estilo lingüístico que se adopta comúnmente en este tipo de lenguajes.
 
 # Modelo general
 
@@ -217,7 +217,7 @@ and: Multiply two boolean terms.
     Returns (bool): p and q.
 
 
-xor: Compare of two boolean terms.
+xor: Compare two boolean terms.
 
     Args:
         p (bool): a boolean term.
@@ -343,6 +343,7 @@ La gramática implementa todas las funciones definidas en la sección *Funciones
 - Los números naturales están hardcodeados de 2 a 9.
 - Las funciones `size`, `empty` y `select` solo acepta ubicaciones (tu mano, etc) como conjunto.
 - Las expresiones naturales y booleanas relacionan hasta dos términos.
+- Los eventos están limitados a cualquier acción realizada por el jugador activo sobre la carta activada.
 - El conjunto de una acción puede ser una acción cuyo conjunto no es una acción.
 - Una regla puede contener un activador, una condición y hasta tres instrucciones.
 
@@ -411,3 +412,5 @@ ps -lextext "Tu oponente roba 2 cartas de tu mazo y tu oponente las descarta." |
 El [**binder**](https://github.com/GrammaticalFramework/gf-binder) de GF es una herramienta para usar GF desde un cuaderno de Jupyter sin instalarlo. Simplemente hay que acceder [aquí](https://mybinder.org/v2/gh/GrammaticalFramework/gf-binder/master) para crear una instancia del binder.
 
 En éste repositorio se incluye el archivo de Jupyter `CG.ipynb` que se puede subir al binder para probar la gramática. Solo incluye la versión en inglés ya que el léxico en español utiliza módulos de la RGL que el binder no soporta.
+
+Hay que ejecutar las celdas con los módulos de la gramática en el orden en que aparecen. Luego se puede escribir un comando de la terminal de GF en una celda y ejecutarla.

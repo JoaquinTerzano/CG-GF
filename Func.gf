@@ -13,6 +13,7 @@ resource Func = open Prelude in {
     key_value : Str -> Str -> Str ;
     key_value = \key, value -> quote key ++ bind ":" value ;
 
+    -- Convertir un Dict en string
     str : Dict -> Str ;
     str = \dict -> 
       "{" ++ BIND ++ 
@@ -23,20 +24,21 @@ resource Func = open Prelude in {
     comma : Str -> Str -> Str ;
     comma = \x, y -> x ++ BIND ++ "," ++ BIND ++ y ;
 
-    val = overload {
-      val : Str -> Dict = \key -> {func = key ; args = "\"\""} ;
+    -- Construir un Dict a partir de distintos argumentos
+    dict = overload {
+      dict : Str -> Dict = \key -> {func = key ; args = "\"\""} ;
 
-      val : Str -> Str -> Dict = \key, value -> {func = key ; args = quote value} ;
+      dict : Str -> Str -> Dict = \key, value -> {func = key ; args = quote value} ;
       
-      val : Str -> Dict -> Dict = \key, dict -> {func = key ; args = str dict} ;
+      dict : Str -> Dict -> Dict = \key, dict -> {func = key ; args = str dict} ;
 
-      val : Str -> Str -> Str -> Dict = \key, value1, value2 -> {func = key ; args = comma (quote value1) (quote value2)} ;
+      dict : Str -> Str -> Str -> Dict = \key, value1, value2 -> {func = key ; args = comma (quote value1) (quote value2)} ;
 
-      val : Str -> Str -> Dict -> Dict = \key, id, dict -> {func = key ; args = comma (quote id) (str dict)} ;
+      dict : Str -> Str -> Dict -> Dict = \key, id, dict -> {func = key ; args = comma (quote id) (str dict)} ;
 
-      val : Str -> Dict -> Dict -> Dict = \key, l, r -> {func = key; args = comma (str l) (str r)} ;
+      dict : Str -> Dict -> Dict -> Dict = \key, l, r -> {func = key; args = comma (str l) (str r)} ;
 
-      val : Str -> Str -> Dict -> Str -> Dict -> Dict = \key, _l, l, _r, r -> {func = key; args = comma (str {func = _l ; args = (str l)})
+      dict : Str -> Str -> Dict -> Str -> Dict -> Dict = \key, _l, l, _r, r -> {func = key; args = comma (str {func = _l ; args = (str l)})
         (str {func = _r ; args = (str r)})}
     } ;
 }

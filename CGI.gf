@@ -11,7 +11,7 @@ incomplete concrete CGI of CG =
 
   oper
     mkNat : Str -> Nat ;
-    mkNat s = {s = mkDigits s ; value = val "natural" s ; lock_Nat = <>} ;
+    mkNat s = {s = mkDigits s ; value = dict "natural" s ; lock_Nat = <>} ;
 
   lin
     -- tristemente hardcodeados
@@ -25,7 +25,7 @@ incomplete concrete CGI of CG =
 
     -- the size of <Location>, el tamaño de <Location>
     -- Size : Location -> NatTerm ;
-    Size loc = {s = mkNP (mkNP the_Det size_N) (mkAdv possess_Prep loc.s) ; value = val "size" loc.value ; lock_NatTerm = <>} ;
+    Size loc = {s = mkNP (mkNP the_Det size_N) (mkAdv possess_Prep loc.s) ; value = dict "size" loc.value ; lock_NatTerm = <>} ;
 
     -- EXPRESSION
     -- <NatTerm>
@@ -34,7 +34,7 @@ incomplete concrete CGI of CG =
 
     -- <NatTerm> <NatOper> <NatTerm>
     -- NatExpr2 : NatTerm -> NatOper -> NatTerm -> NatExpr ;
-    NatExpr2 x op y = {s = mkNP x.s (mkAdv op.s y.s) ; value = val op.value x.value y.value ;
+    NatExpr2 x op y = {s = mkNP x.s (mkAdv op.s y.s) ; value = dict op.value x.value y.value ;
       lock_NatExpr = <>} ;
 
     -- FUNCTION
@@ -83,31 +83,31 @@ incomplete concrete CGI of CG =
     -- TERM
     -- <NatExpr> is <NatRel> <NatExpr>, <NatExpr> es <NatRel> <NatExpr>
     -- Compare : NatExpr -> NatRel -> NatExpr -> BoolTerm ;
-    Compare x rel y = {s = expr x.s rel.s y.s ; value = val rel.value x.value y.value ;
+    Compare x rel y = {s = expr x.s rel.s y.s ; value = dict rel.value x.value y.value ;
       lock_BoolTerm = <>} ;
 
     -- <Location> is empty, <Location> está vacío
     -- Empty : Location -> BoolTerm ;
-    Empty loc = {s = mkCl loc.s empty_A ; value = val "empty" loc.value ;
+    Empty loc = {s = mkCl loc.s empty_A ; value = dict "empty" loc.value ;
       lock_BoolTerm = <>} ;
 
     -- you play this card | etc | tú juegas esta carta | etc
     -- Trigger : Action -> BoolExpr ;
     Trigger action = {s = expr positivePol (mkCl you_NP action.s (mkNP this_Det card_N)) ;
-      value = val "event" (val action.value (val "player" "active") (val "this")) ;
+      value = dict "event" (dict action.value (dict "player" "active") (dict "this")) ;
       lock_Event = <>} ;
 
     -- EXPRESSION
     -- p (is | isn't) q, p (es | está | no es | no está) q
     -- BoolExpr1 : BoolPol -> BoolTerm -> BoolExpr ;
-    BoolExpr1 pol p = {s = expr pol.s p.s ; value = val pol.value p.value ; lock_BoolExpr = <>} ;
+    BoolExpr1 pol p = {s = expr pol.s p.s ; value = dict pol.value p.value ; lock_BoolExpr = <>} ;
 
     -- p (is | isn't) q <BoolOper> r (is | isn't) s
     -- p (es | está | no es | no está) q <BoolOper> r (es | está | no es | no está) s
     -- BoolExpr2 : BoolPol -> BoolTerm -> BoolOper -> BoolPol -> BoolTerm -> BoolExpr ;
     BoolExpr2 polp p op polq q = {
       s = expr polp.s p.s op.s polq.s q.s ;
-      value = val op.value polp.value p.value polq.value q.value ;
+      value = dict op.value polp.value p.value polq.value q.value ;
       lock_BoolExpr = <>} ;
 
     -- FUNCTION
@@ -148,11 +148,11 @@ incomplete concrete CGI of CG =
     mkPlayer : Role -> Player ;
     mkPlayer role = case role of {
       -- you, tú
-      Active => {s = you_NP ; ref = you_NP ; role = Active ; value = val "player" "active" ;
+      Active => {s = you_NP ; ref = you_NP ; role = Active ; value = dict "player" "active" ;
         lock_Player = <>} ;
       -- your opponent, tu oponente
       Inactive => {s = mkNP youSg_Pron opponent_N ; ref = they_NP ; role = Inactive ;
-        value = val "player" "inactive" ;
+        value = dict "player" "inactive" ;
         lock_Player = <>}
     } ;
 
@@ -160,26 +160,26 @@ incomplete concrete CGI of CG =
     mkLocation role domain = case role of {
       Active => let player = mkPlayer Active in case domain of {
         -- your hand, tu mano
-        Hand => {s = mkNP youSg_Pron hand_N ; value = val "location" "hand" player.value ;
+        Hand => {s = mkNP youSg_Pron hand_N ; value = dict "location" "hand" player.value ;
           lock_Location = <>} ;
         -- your deck, tu mazo
-        Deck => {s = mkNP youSg_Pron deck_N ; value = val "location" "deck" player.value ;
+        Deck => {s = mkNP youSg_Pron deck_N ; value = dict "location" "deck" player.value ;
           lock_Location = <>} ;
         -- your discard pile, tu pila de descarte
         DiscardPile => {s = mkNP youSg_Pron discard_pile_N ;
-          value = val "location" "discard_pile" player.value ;
+          value = dict "location" "discard_pile" player.value ;
           lock_Location = <>}
       } ;
       Inactive => let player = mkPlayer Inactive in case domain of {
         -- your opponent's hand, la mano de tu oponente
         Hand => {s = possessive player.s hand_N ;
-          value = val "location" "hand" player.value ; lock_Location = <>} ;
+          value = dict "location" "hand" player.value ; lock_Location = <>} ;
         -- your opponent's deck, el mazo de tu oponente
         Deck => {s = possessive player.s deck_N ;
-          value = val "location" "deck" player.value ; lock_Location = <>} ;
+          value = dict "location" "deck" player.value ; lock_Location = <>} ;
         -- your opponent's discard pile, la pila de descarte de tu oponente
         DiscardPile => {s = possessive player.s discard_pile_N ;
-          value = val "location" "discard_pile" player.value ; lock_Location = <>}
+          value = dict "location" "discard_pile" player.value ; lock_Location = <>}
       }
     } ;
 
@@ -243,42 +243,42 @@ incomplete concrete CGI of CG =
     -- SET
     -- this card, esta carta
     -- ThisCard : Set ;
-    ThisCard = {s = mkNP this_Det card_N ; ref = card_ref_NP ; value = val "this" ;
+    ThisCard = {s = mkNP this_Det card_N ; ref = card_ref_NP ; value = dict "this" ;
       lock_Set = <>} ;
 
     -- a card from <Location>, una carta de <Location>
     -- CardLocation : Location -> Set ;
     CardLocation loc = {s = cards from_Prep loc.s ; ref = card_ref_NP ;
-      value = val "select" loc.value (val "natural" "1") ;
+      value = dict "select" loc.value (dict "natural" "1") ;
       lock_Set = <>} ;
 
     -- all the cards from <Location>, todas las cartas de <Location>
     -- AllLocation : Location -> Set ;
     AllLocation loc = {s = cards all_Predet from_Prep loc.s ; ref = cards_ref_NP ;
-      value = val "select" loc.value (val "natural" "1") ;
+      value = dict "select" loc.value (dict "natural" "1") ;
       lock_Set = <>} ;
 
     -- <Nat> cards from <Location>, <Nat> cartas de <Location>
     -- NatLocation : Nat -> Location -> Set ;
     NatLocation n loc = {s = cards n.s from_Prep loc.s ; ref = cards_ref_NP ;
-      value = val "select" loc.value n.value ;
+      value = dict "select" loc.value n.value ;
       lock_Set = <>} ;
 
     -- as many cards as <NatExpr> from <Location>
     -- tantas cartas como <NatExpr> de <Location>
     -- NatExprLocation : NatExpr -> Location -> Set ;
     NatExprLocation n loc = {s = cards n.s from_Prep loc.s ; ref = cards_ref_NP ;
-      value = val "select" loc.value n.value ;
+      value = dict "select" loc.value n.value ;
       lock_Set = <>} ;
 
     -- <Set> if <BoolExpr>, <Set> si <BoolExpr>
     -- ConditionalSet : Set -> BoolExpr -> Set ;
     ConditionalSet set con = {s = mkNP set.s (mkAdv if_Subj con.s) ; ref = set.ref ;
-      value = val "conditional" con.value set.value ;
+      value = dict "conditional" con.value set.value ;
       lock_Set = <>} ;
 
 
-  -- MORPHOLOGY
+  -- MAIN
   lincat
     SimpleInst = {s : S ; ref : NP ; value : Dict ; lock_SimpleInst : {}} ;
     DependentInst = {s : ListS ; value : Dict ; lock_DependentInst : {}} ;
@@ -295,7 +295,7 @@ incomplete concrete CGI of CG =
     -- UseSimpleInst : Player -> Action -> Set -> SimpleInst ;
     UseSimpleInst player action set = {s = inst player.s action.s set.s ;
       ref = set.ref ;
-      value = val action.value player.value set.value ;
+      value = dict action.value player.value set.value ;
       lock_SimpleInst = <>} ;
 
     -- SimpleInstruction : SimpleInst -> Instruction ;
@@ -305,7 +305,7 @@ incomplete concrete CGI of CG =
     -- tu oponente roba 2 cartas y las descarta | etc
     -- UseDependentInst : Player -> Action -> SimpleInst -> DependentInst ;
     UseDependentInst player action i = {s = mkListS i.s (inst player.s action.s i.ref) ;
-      value = val "and" i.value (val action.value player.value i.value) ;
+      value = dict "and" i.value (dict action.value player.value i.value) ;
       lock_DependentInst = <>} ;
 
     -- DependentInstruction : DependentInst -> Instruction ;
@@ -314,7 +314,7 @@ incomplete concrete CGI of CG =
     -- your opponent draws 2 cards and they discard a card | etc
     -- tu oponente roba 2 cartas y éste descarta una carta | etc
     -- UseIndependentInst : SimpleInst -> SimpleInst -> IndependentInst ;
-    UseIndependentInst i j = {s = mkListS i.s j.s ; value = val "and" i.value j.value ;
+    UseIndependentInst i j = {s = mkListS i.s j.s ; value = dict "and" i.value j.value ;
       lock_IndependentInst = <>} ;
 
     -- IndependentInstruction : IndependentInst -> Instruction ;
@@ -324,40 +324,40 @@ incomplete concrete CGI of CG =
     -- tu oponente descarta una carta, éste roba 2 cartas y éste las revela | etc
     -- TripleDependentInst : SimpleInst -> DependentInst -> Instruction ;
     TripleDependentInst i j = {s = mkS and_Conj (mkListS i.s j.s) ;
-      value = val "and" i.value j.value ;
+      value = dict "and" i.value j.value ;
       lock_Instruction = <>} ;
 
     -- your opponent discards a card, they draw a card and they reveal a card | etc
     -- tu oponente descarta una carta, éste roba una carta y éste revela una carta | etc
     -- TripleIndependentInst : SimpleInst -> IndependentInst -> Instruction ;
     TripleIndependentInst i j = {s = mkS and_Conj (mkListS i.s j.s) ;
-      value = val "and" i.value j.value ;
+      value = dict "and" i.value j.value ;
       lock_Instruction = <>} ;
 
     -- RULE
     -- you draw 2 cards | etc, tú robas 2 cartas | etc
     -- SimpleRule : Instruction -> Rule ;
     SimpleRule i = {s = i.s ;
-      value = val "conditional" (val "event" (val "play" (
-        val "player" "active") (val "this"))) i.value ;
+      value = dict "conditional" (dict "event" (dict "play" (
+        dict "player" "active") (dict "this"))) i.value ;
       lock_Rule = <>} ;
 
     -- if <BoolExpr> then <Instruction>, si <BoolExpr> entonces <Instruction>
     -- ConditionRule : BoolExpr -> Instruction -> Rule ;
     ConditionRule con ins = {s = mkS condition_Conj con.s ins.s ;
-      value = val "conditional" (val "event" (val "play" (val "player" "active")
-        (val "this"))) (val "conditional" con.value ins.value) ;
+      value = dict "conditional" (dict "event" (dict "play" (dict "player" "active")
+        (dict "this"))) (dict "conditional" con.value ins.value) ;
       lock_Rule = <>} ;
     
     -- TriggerRule : Event -> Instruction -> Rule ;
     TriggerRule eve ins = {s = mkS trigger_Conj eve.s ins.s ;
-      value = val "conditional" eve.value ins.value ;
+      value = dict "conditional" eve.value ins.value ;
       lock_Rule = <>} ;
 
     -- when <Trigger> : if <BoolExpr> then <Instruction>
     -- TriggerConditionRule : Event -> BoolExpr -> Instruction -> Rule ;
     TriggerConditionRule eve con ins = {s = mkS trigger_Conj eve.s (mkS condition_Conj con.s ins.s) ;
-      value = val "conditional" eve.value (val "conditional" con.value ins.value) ;
+      value = dict "conditional" eve.value (dict "conditional" con.value ins.value) ;
       lock_Rule = <>} ;
 
     -- <Rule>. <Description>

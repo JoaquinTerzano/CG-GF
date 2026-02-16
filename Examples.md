@@ -15,7 +15,7 @@ Este documento contiene ejemplos de descripciones que son aceptadas por la gram�
 ```json
 {
     "func": "natural",
-    "args": "7"
+    "args": ["7"]
 }
 ```
 
@@ -27,10 +27,13 @@ Este documento contiene ejemplos de descripciones que son aceptadas por la gram�
 
 ```json
 {
-    "func": "location",
-    "args": ["discard_pile", {
-        "func": "player",
-        "args": ["active"]
+    "func": "size",
+    "args": [{
+        "func": "location",
+        "args": ["discard_pile", {
+            "func": "player",
+            "args": ["active"]
+        }]
     }]
 }
 ```
@@ -382,7 +385,44 @@ Este documento contiene ejemplos de descripciones que son aceptadas por la gram�
 }
 ```
 
-### Morphology
+---
+
+> **Eng:** A card from your hand if your hand isn't empty
+
+> **Spa:** Una carta de tu mano si tu mano no está vacía
+
+```json
+{
+    "func": "conditional",
+    "args": [{
+        "func": "not",
+        "args": [{
+            "func": "empty",
+            "args": [{
+                "func": "location",
+                "args": ["hand", {
+                    "func": "player",
+                    "args": ["active"]
+                }]
+            }]
+        }]
+    }, {
+        "func": "select",
+        "args": [{
+            "func": "location",
+            "args": ["hand", {
+                "func": "player",
+                "args": ["active"]
+            }]
+        }, {
+            "func": "natural",
+            "args": ["1"]
+        }]
+    }]
+}
+```
+
+### Main
 
 #### Instruction
 
@@ -523,7 +563,7 @@ Este documento contiene ejemplos de descripciones que son aceptadas por la gram�
 
 > **Eng:** When you reveal this card: if your opponent's deck is empty or 5 cards aren't more than 7 cards plus 2 cards, you reveal all the cards from your opponent's hand
 
-> **Spa:** Cuando revelas esta carta: si el mazo de tu oponente está vacío o 5 cartas no son mayores a 7 cartas más 2 cartas, tú revelas todas las cartas de la mano de tu oponente
+> **Spa:** Cuando tú revelas esta carta: si el mazo de tu oponente está vacío o 5 cartas no son mayores a 7 cartas más 2 cartas, tú revelas todas las cartas de la mano de tu oponente
 
 ```json
 {
@@ -693,6 +733,97 @@ Este documento contiene ejemplos de descripciones que son aceptadas por la gram�
             }, {
                 "func": "natural",
                 "args": ["1"]
+            }]
+        }]
+    }]
+}]
+```
+
+---
+
+> **Eng:** When you discard this card: you draw a card from your deck. If your hand is empty, you draw a card from your deck.
+
+> **Spa:** Cuando tú descartas esta carta: tú robas una carta de tu mazo. Si tu mano está vacía, tú robas una carta de tu mazo.
+
+```json
+[{
+    "func": "conditional",
+    "args": [{
+        "func": "event",
+        "args": [{
+            "func": "discard",
+            "args": [{
+                "func": "player",
+                "args": ["active"]
+            }, {
+                "func": "this",
+                "args": [""]
+            }]
+        }]
+    }, {
+        "func": "draw",
+        "args": [{
+            "func": "player",
+            "args": ["active"]
+        }, {
+            "func": "select",
+            "args": [{
+                "func": "location",
+                "args": ["deck", {
+                    "func": "player",
+                    "args": ["active"]
+                }]
+            }, {
+                "func": "natural",
+                "args": ["1"]
+            }]
+        }]
+    }]
+}, {
+    "func": "conditional",
+    "args": [{
+        "func": "event",
+        "args": [{
+            "func": "play",
+            "args": [{
+                "func": "player",
+                "args": ["active"]
+            }, {
+                "func": "this",
+                "args": [""]
+            }]
+        }]
+    }, {
+        "func": "conditional",
+        "args": [{
+            "func": "pass",
+            "args": [{
+                "func": "empty",
+                "args": [{
+                    "func": "location",
+                    "args": ["hand", {
+                        "func": "player",
+                        "args": ["active"]
+                    }]
+                }]
+            }]
+        }, {
+            "func": "draw",
+            "args": [{
+                "func": "player",
+                "args": ["active"]
+            }, {
+                "func": "select",
+                "args": [{
+                    "func": "location",
+                    "args": ["deck", {
+                        "func": "player",
+                        "args": ["active"]
+                    }]
+                }, {
+                    "func": "natural",
+                    "args": ["1"]
+                }]
             }]
         }]
     }]
