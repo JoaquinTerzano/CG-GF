@@ -128,6 +128,8 @@ abstract CG = open Syntax in {
     ThisCard : Set ;
     -- a card from <Location>, una carta de <Location>
     CardLocation : Location -> Set ;
+    -- 1 card from <Location>, 1 carta de <Location>
+    CardLocationAlt : Location -> Set ;
     -- all the cards from <Location>, todas las cartas de <Location>
     AllLocation : Location -> Set ;
     -- <Nat> cards from <Location>, <Nat> cartas de <Location>

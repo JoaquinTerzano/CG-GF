@@ -248,32 +248,44 @@ incomplete concrete CGI of CG =
 
     -- a card from <Location>, una carta de <Location>
     -- CardLocation : Location -> Set ;
-    CardLocation loc = {s = cards from_Prep loc.s ; ref = card_ref_NP ;
+    CardLocation loc = {s = cards from_Prep loc.s ;
+      ref = card_ref_NP ;
+      value = dict "select" loc.value (dict "natural" "1") ;
+      lock_Set = <>} ;
+
+    -- 1 card from <Location>, 1 carta de <Location>
+    -- CardLocationAlt : Location -> Set ;
+    CardLocationAlt loc = {s = cards (mkDigits "1") from_Prep loc.s ;
+      ref = card_ref_NP ;
       value = dict "select" loc.value (dict "natural" "1") ;
       lock_Set = <>} ;
 
     -- all the cards from <Location>, todas las cartas de <Location>
     -- AllLocation : Location -> Set ;
-    AllLocation loc = {s = cards all_Predet from_Prep loc.s ; ref = cards_ref_NP ;
-      value = dict "select" loc.value (dict "natural" "1") ;
+    AllLocation loc = {s = cards all_Predet from_Prep loc.s ;
+      ref = cards_ref_NP ;
+      value = loc.value ;
       lock_Set = <>} ;
 
     -- <Nat> cards from <Location>, <Nat> cartas de <Location>
     -- NatLocation : Nat -> Location -> Set ;
-    NatLocation n loc = {s = cards n.s from_Prep loc.s ; ref = cards_ref_NP ;
+    NatLocation n loc = {s = cards n.s from_Prep loc.s ;
+      ref = cards_ref_NP ;
       value = dict "select" loc.value n.value ;
       lock_Set = <>} ;
 
     -- as many cards as <NatExpr> from <Location>
     -- tantas cartas como <NatExpr> de <Location>
     -- NatExprLocation : NatExpr -> Location -> Set ;
-    NatExprLocation n loc = {s = cards n.s from_Prep loc.s ; ref = cards_ref_NP ;
+    NatExprLocation n loc = {s = cards n.s from_Prep loc.s ;
+      ref = cards_ref_NP ;
       value = dict "select" loc.value n.value ;
       lock_Set = <>} ;
 
     -- <Set> if <BoolExpr>, <Set> si <BoolExpr>
     -- ConditionalSet : Set -> BoolExpr -> Set ;
-    ConditionalSet set con = {s = mkNP set.s (mkAdv if_Subj con.s) ; ref = set.ref ;
+    ConditionalSet set con = {s = mkNP set.s (mkAdv if_Subj con.s) ;
+      ref = set.ref ;
       value = dict "conditional" con.value set.value ;
       lock_Set = <>} ;
 

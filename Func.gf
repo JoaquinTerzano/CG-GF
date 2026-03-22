@@ -1,5 +1,4 @@
 resource Func = open Prelude in {
-
   oper
     Dict : Type ;
     Dict = {func : Str ; args : Str} ;

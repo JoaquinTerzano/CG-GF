@@ -21,7 +21,7 @@ utilizando los siguientes tipos:
 
 Este formato está pensado para usarse como entrada de un intérprete que programa instrucciones utilizando un paradigma puramente funcional. Este enfoque viene dado por el estilo lingüístico que se adopta comúnmente en este tipo de lenguajes.
 
-# Modelo general
+# Modelo
 
 Cuando *se activa* una carta, un programa controlador ejecuta su *descripción*. La descripción es una secuencia de *reglas* que tienen un impacto en el juego. Las reglas son declaraciones de *instrucciones* sujetas a *condiciones*. El siguiente grafo muestra la jerarquía general del lenguaje:
 

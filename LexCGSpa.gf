@@ -1,5 +1,3 @@
---# -coding=utf-8
-
 instance LexCGSpa of LexCG = open SyntaxSpa, ParadigmsSpa, (M = MorphoSpa), Prelude in {
   oper
     card_N = mkN "carta" ;

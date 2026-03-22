@@ -1,5 +1,7 @@
 concrete CGSpa of CG = CGI with
-    (Syntax = SyntaxSpa), (Extend = ExtendSpa), (LexCG = LexCGSpa) ** {
+    (Syntax = SyntaxSpa),
+    (Extend = ExtendSpa),
+    (LexCG = LexCGSpa) ** open (P = ParadigmsSpa), Prelude in {
 
   oper
     possessive = overload {
